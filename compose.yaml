@@ -33,7 +33,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
     depends_on:
       - database
 # }}}
@@ -51,7 +51,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
     depends_on:
       - database
       - fcm_api 
@@ -69,7 +69,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
     depends_on:
       - database
       - profiles_api
@@ -109,7 +109,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
     depends_on:
       - users_api
   # }}}
@@ -126,7 +126,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
     depends_on:
       - questions_api
   # }}}
@@ -145,7 +145,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
       - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
     depends_on:
       - questions_api
@@ -164,13 +164,13 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
   #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
   #   depends_on:
   #     - questions_api
   #     - slides_api
   # # }}}
-  # 
+
   # # {{{ externals
   # externals_api:
   #   image: kennycallado/q-api-externals:latest
@@ -183,7 +183,7 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
   #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
   #   depends_on:
   #     - questions_api
@@ -204,7 +204,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
       - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide"
       - ROCKET_FORM_URL="http://forms_api:8000/api/v1/form"
       - ROCKET_EXTERNAL_URL="http://externals_api:8000/api/v1/external"
@@ -223,7 +223,7 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
   #   depends_on:
   #     - resources_api
   # # }}}
