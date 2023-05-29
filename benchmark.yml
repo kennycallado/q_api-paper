@@ -44,4 +44,44 @@ plan:
       headers:
         Accept: application/json
     tags: [ health ]
+
+  - name: Post Index
+    request:
+      method: POST
+      url: '/api/v1/paper'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '{ "user_id": 1, "resource_id": {{ iteration }}, "project_id": {{ iteration }} }'
+    tags: [ post ]
+
+  - name: Get Index
+    request:
+      url: '/api/v1/paper'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+    tags: [ index ]
+
+  - name: Get Show
+    request:
+      # url: '/api/v1/paper/{{ iteration }}'
+      url: '/api/v1/paper/1'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+    tags: [ show ]
+
+  - name: Put Show
+    request:
+      method: PUT
+      # url: '/api/v1/paper/{{ iteration }}'
+      url: '/api/v1/paper/1'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '{ "user_id": 2, "resource_id": 1, "project_id": {{ iteration }} }'
+    tags: [ put ]
 ---
