@@ -1,11 +1,14 @@
 use rocket::http::Status;
+use rocket::State;
 use rocket::serde::json::Json;
+
+use crate::app::providers::interfaces::helpers::fetch::Fetch;
 
 use crate::app::providers::guards::claims::AccessClaims;
 use crate::config::database::Db;
 
 use crate::app::modules::papers::handlers::{create, index, show, update};
-use crate::app::modules::papers::model::{Paper, NewPaper};
+use crate::app::modules::papers::model::{Paper, NewPaper, PaperComplete};
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![
@@ -49,9 +52,9 @@ pub async fn get_index_none() -> Status {
 }
 
 #[get("/<id>", rank = 101)]
-pub async fn get_show(db: Db, claims: AccessClaims, id: i32) -> Result<Json<Paper>, Status> {
+pub async fn get_show(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<PaperComplete>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_show_admin(&db, claims.0.user, id).await,
+        "admin" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
         _ => {
             println!("Error: get_show; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
