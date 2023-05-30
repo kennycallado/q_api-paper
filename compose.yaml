@@ -95,120 +95,80 @@ services:
 # }}}
 
 # # {{{ questions - answers
-#   # {{{ questions
-#   questions_api:
-#     image: kennycallado/q-api-questions:latest
-#     ports:
-#       - "8011:8000"
-#     expose:
-#       - "8011:8000"
-#     environment:
-#       - ROCKET_ADDRESS="0.0.0.0"
-#       - ROCKET_PORT=8000
-#       - ROCKET_SECRET_KEY=""
-#       - ROCKET_MIGRATIONS_RUN=true
-#       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-#     depends_on:
-#       - users_api
-#   # }}}
+  # {{{ questions
+  questions_api:
+    image: kennycallado/q-api-questions:latest
+    ports:
+      - "8011:8000"
+    expose:
+      - "8011:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_MIGRATIONS_RUN=true
+      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+    depends_on:
+      - users_api
+  # }}}
 
-#   # {{{ ansers
-#   answers_api:
-#     image: kennycallado/q-api-answers:latest
-#     ports:
-#       - "8012:8000"
-#     expose:
-#       - "8012:8000"
-#     environment:
-#       - ROCKET_ADDRESS="0.0.0.0"
-#       - ROCKET_PORT=8000
-#       - ROCKET_SECRET_KEY=""
-#       - ROCKET_MIGRATIONS_RUN=true
-#       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-#     depends_on:
-#       - questions_api
-#   # }}}
+  # {{{ ansers
+  answers_api:
+    image: kennycallado/q-api-answers:latest
+    ports:
+      - "8012:8000"
+    expose:
+      - "8012:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_MIGRATIONS_RUN=true
+      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+    depends_on:
+      - questions_api
+  # }}}
 # # }}}
 
 # {{{ slides - forms - externals
-  # # {{{ slides
-  # slides_api:
-  #   image: kennycallado/q-api-slides:latest
-  #   ports:
-  #     - "8021:8000"
-  #   expose:
-  #     - "8021:8000"
-  #   environment:
-  #     - ROCKET_ADDRESS="0.0.0.0"
-  #     - ROCKET_PORT=8000
-  #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-  #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
-  #   depends_on:
-  #     - questions_api
-  #     - answers_api
-  # # }}}
+  # {{{ slides
+  slides_api:
+    image: kennycallado/q-api-slides:latest
+    ports:
+      - "8021:8000"
+    expose:
+      - "8021:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_MIGRATIONS_RUN=true
+      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
+    depends_on:
+      - questions_api
+  # }}}
   
-  # # {{{ forms
-  # forms_api:
-  #   image: kennycallado/q-api-forms:latest
-  #   ports:
-  #     - "8022:8000"
-  #   expose:
-  #     - "8022:8000"
-  #   environment:
-  #     - ROCKET_ADDRESS="0.0.0.0"
-  #     - ROCKET_PORT=8000
-  #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-  #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
-  #   depends_on:
-  #     - questions_api
-  #     - slides_api
-  # # }}}
-
-  # # {{{ externals
-  # externals_api:
-  #   image: kennycallado/q-api-externals:latest
-  #   ports:
-  #     - "8023:8000"
-  #   expose:
-  #     - "8023:8000"
-  #   environment:
-  #     - ROCKET_ADDRESS="0.0.0.0"
-  #     - ROCKET_PORT=8000
-  #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-  #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
-  #   depends_on:
-  #     - questions_api
-  #     - forms_api
-  # # }}}
-# }}}
-
 # {{{ resources - papers
-  # # {{{ resources
-  # resources_api:
-  #   image: kennycallado/q-api-resources:latest
-  #   ports:
-  #     - "8031:8000"
-  #   expose:
-  #     - "8031:8000"
-  #   environment:
-  #     - ROCKET_ADDRESS="0.0.0.0"
-  #     - ROCKET_PORT=8000
-  #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-  #     - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide"
-  #     - ROCKET_FORM_URL="http://forms_api:8000/api/v1/form"
-  #     - ROCKET_EXTERNAL_URL="http://externals_api:8000/api/v1/external"
-  #   depends_on:
-  #     - slides_api
-  # # }}}
+  # {{{ resources
+  resources_api:
+    image: kennycallado/q-api-resources:latest
+    ports:
+      - "8031:8000"
+    expose:
+      - "8031:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_MIGRATIONS_RUN=true
+      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+      - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide"
+      - ROCKET_FORM_URL="http://forms_api:8000/api/v1/form"
+      - ROCKET_EXTERNAL_URL="http://externals_api:8000/api/v1/external"
+    depends_on:
+      - slides_api
+  # }}}
 
   # # {{{ papers
   # papers_api:
