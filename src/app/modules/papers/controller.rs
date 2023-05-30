@@ -8,7 +8,7 @@ use crate::app::providers::guards::claims::AccessClaims;
 use crate::config::database::Db;
 
 use crate::app::modules::papers::handlers::{create, index, show, update};
-use crate::app::modules::papers::model::{Paper, NewPaper, PaperComplete};
+use crate::app::modules::papers::model::{Paper, NewPaper, PaperComplete, PaperPush};
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![
@@ -20,6 +20,8 @@ pub fn routes() -> Vec<rocket::Route> {
         get_show_none,
         post_create,
         post_create_none,
+        post_show_create,
+        post_show_create_none,
         put_update,
         put_update_none,
     ]
@@ -80,6 +82,24 @@ pub async fn post_create(db: Db, claims: AccessClaims, new_paper: Json<NewPaper>
 
 #[post("/", data = "<_new_paper>", rank = 2)]
 pub async fn post_create_none(_new_paper: Json<NewPaper>) -> Status {
+    Status::Unauthorized
+}
+
+#[post("/<id>", data = "<paper>", rank = 101)]
+pub async fn post_show_create(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32, paper: Json<PaperPush>) -> Result<rocket::serde::json::Value, Status> {
+    match claims.0.user.role.name.as_str() {
+        "admin" => create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await,
+        "user" => Ok(rocket::serde::json::json!({ "message": "Not implemented" })),
+        _ => {
+            println!("Error: post_show_create; Role not handled {}", claims.0.user.role.name);
+            Err(Status::BadRequest)
+        }
+    }
+    
+}
+
+#[post("/<_id>", data = "<_paper>", rank = 102)]
+pub async fn post_show_create_none(_id: i32, _paper: Json<PaperPush>) -> Status {
     Status::Unauthorized
 }
 
