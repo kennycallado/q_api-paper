@@ -9,3 +9,10 @@ pub struct PubAnswer {
     pub question_id: i32,
     pub answer: String,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct PubNewAnswer {
+    pub question_id: i32,
+    pub answer: String,
+}
