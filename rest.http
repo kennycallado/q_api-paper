@@ -41,7 +41,11 @@ GET http://localhost:8000/api/v1/paper
 Accept: application/json
 Authorization: Bearer 
 
-GET http://localhost:8000/api/v1/paper/1
+GET http://localhost:8000/api/v1/paper/2
+Accept: application/json
+Authorization: Bearer 
+
+GET http://localhost:8000/api/v1/paper/last
 Accept: application/json
 Authorization: Bearer 
 
@@ -56,15 +60,57 @@ Content-type: application/json
   "project_id": 1
 }
 
-PUT http://localhost:8000/api/v1/paper/3
+POST http://localhost:8041/api/v1/logic/checker
 Accept: application/json
 Authorization: Bearer 
 Content-type: application/json
 
 {
+  "id": 1,
   "user_id": 2,
-  "resource_id": 2,
-  "project_id": 1
+  "user_record": { "step": 5, "mood": 45 },
+  "project_id": 1,
+  "resource_id": 50,
+  "completed": true,
+  "answers": [
+    { "question_id": 1, "answer": "10" },
+    { "question_id": 2, "answer": "10" },
+    { "question_id": 3, "answer": "10" },
+    { "question_id": 5, "answer": "5" }
+  ]
+}
+
+POST http://localhost:8000/api/v1/paper/1
+Accept: application/json
+Authorization: Bearer 
+Content-type: application/json
+
+#"user_record": "{'step': 1, 'mood': '40'}",
+{
+  "id": 1,
+  "user_id": 1,
+  "user_record": { "step": 1, "mood": 45 },
+  "project_id": 1,
+  "resource_id": 10,
+  "completed": false,
+  "answers": [
+    { "question_id": 1, "answer": "10" },
+    { "question_id": 2, "answer": "10" },
+    { "question_id": 3, "answer": "10" },
+    { "question_id": 5, "answer": "5" }
+  ]
+}
+
+PUT http://localhost:8000/api/v1/paper/1
+Accept: application/json
+Authorization: Bearer 
+Content-type: application/json
+
+{
+  "user_id": 1,
+  "resource_id": 50,
+  "project_id": 1,
+  "completed": true
 }
 
 # }}}
