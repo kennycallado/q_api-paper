@@ -18,6 +18,8 @@ pub fn routes() -> Vec<rocket::Route> {
         get_index_none,
         get_show,
         get_show_none,
+        get_last_admin,
+
         post_create,
         post_create_none,
         post_show_create,
@@ -67,6 +69,14 @@ pub async fn get_show(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i3
 #[get("/<_id>", rank = 102)]
 pub async fn get_show_none(_id: i32) -> Status {
     Status::Unauthorized
+}
+
+#[get("/last", rank = 1)]
+pub async fn get_last_admin(fetch: &State<Fetch>, db: Db, 
+    // claims: AccessClaims
+) -> Result<Json<Vec<PaperPush>>, Status> {
+
+    show::get_index_user_paper(fetch, &db, /*claims.0.user,*/ 1).await
 }
 
 #[post("/", data = "<new_paper>", rank = 1)]
