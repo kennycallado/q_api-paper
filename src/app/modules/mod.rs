@@ -1,4 +1,4 @@
-pub mod paper_answers;
-pub mod paper_resource;
-pub mod papers;
+mod paper_answers;
+mod paper_resource;
+mod papers;
 pub mod routing;
