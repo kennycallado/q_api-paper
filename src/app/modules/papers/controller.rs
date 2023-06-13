@@ -2,10 +2,10 @@ use rocket::http::Status;
 use rocket::State;
 use rocket::serde::json::Json;
 
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
+use crate::database::connection::Db;
 
 use crate::app::providers::guards::claims::AccessClaims;
-use crate::config::database::Db;
+use crate::app::providers::services::fetch::Fetch;
 
 use crate::app::modules::papers::handlers::{create, index, show, update};
 use crate::app::modules::papers::model::{Paper, NewPaper, PaperComplete, PaperPush};

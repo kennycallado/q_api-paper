@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::app::providers::interfaces::resource::PubResource;
-use crate::app::providers::interfaces::answer::{PubAnswer, PubNewAnswer};
+use crate::app::providers::models::resource::PubResource;
+use crate::app::providers::models::answer::{PubAnswer, PubNewAnswer};
 
 use crate::database::schema::papers;
 
@@ -44,7 +44,7 @@ impl From<PaperPush> for NewPaper {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct PaperComplete {
     pub id: i32,

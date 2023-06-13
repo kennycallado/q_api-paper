@@ -1,8 +1,8 @@
 use rocket::http::Status;
 use rocket::State;
 
-use crate::app::providers::interfaces::helpers::config_getter::ConfigGetter;
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
+use crate::app::providers::config_getter::ConfigGetter;
+use crate::app::providers::services::fetch::Fetch;
 
 use crate::app::modules::papers::model::PaperPush;
 
@@ -12,8 +12,8 @@ pub async fn send_to_logic(fetch: &State<Fetch>, paper: &PaperPush) -> Result<Pa
         Err(_) => return Err(Status::InternalServerError),
     };
 
-    let logic_url = ConfigGetter::get_entity_url("logic").unwrap_or("http://localhost:8041/api/v1/logic".to_string())
-        + "/checker";
+    let logic_url = ConfigGetter::get_entity_url("logic").unwrap_or("http://localhost:8041/api/v1/logic/".to_string())
+        + "checker";
 
     let client = fetch.client.lock().await;
     let res = client

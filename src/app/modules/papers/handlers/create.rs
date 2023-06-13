@@ -2,14 +2,15 @@ use rocket::http::Status;
 use rocket::State;
 use rocket::serde::json::Json;
 
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
-use crate::app::providers::interfaces::helpers::claims::UserInClaims;
-use crate::config::database::Db;
+use crate::database::connection::Db;
+
+use crate::app::providers::services::fetch::Fetch;
+use crate::app::providers::services::claims::UserInClaims;
+
+use crate::app::modules::paper_answers::services::repository as pa_repository;
+use crate::app::modules::papers::services::repository as paper_repository;
 
 use crate::app::modules::papers::model::{Paper, NewPaper, PaperPush};
-
-use crate::app::modules::papers::services::repository as paper_repository;
-use crate::app::modules::paper_answers::services::repository as pa_repository;
 
 use super::helper;
 

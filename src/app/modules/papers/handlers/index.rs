@@ -1,8 +1,9 @@
 use rocket::http::Status;
 use rocket::serde::json::Json;
 
-use crate::app::providers::interfaces::helpers::claims::UserInClaims;
-use crate::config::database::Db;
+use crate::database::connection::Db;
+
+use crate::app::providers::services::claims::UserInClaims;
 
 use crate::app::modules::papers::model::Paper;
 use crate::app::modules::papers::services::repository as paper_repository;

@@ -1,10 +1,9 @@
 use rocket::http::Status;
 use rocket::State;
 
-use crate::app::providers::interfaces::helpers::config_getter::ConfigGetter;
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
-
-use crate::app::providers::interfaces::resource::PubResource;
+use crate::app::providers::config_getter::ConfigGetter;
+use crate::app::providers::models::resource::PubResource;
+use crate::app::providers::services::fetch::Fetch;
 
 pub async fn get_resource_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubResource, Status> {
     let robot_token = match Fetch::robot_token().await {
@@ -12,12 +11,9 @@ pub async fn get_resource_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubReso
         Err(_) => return Err(Status::InternalServerError),
     };
 
-    // Prepare url
-    let resource_url = ConfigGetter::get_entity_url("resource").unwrap_or("http://localhost:8031/api/v1/resource".to_string())
-        + "/"
+    let resource_url = ConfigGetter::get_entity_url("resource").unwrap_or("http://localhost:8031/api/v1/resource/".to_string())
         + id.to_string().as_str();
 
-    // Request
     let client = fetch.client.lock().await;
     let res = client
         .get(resource_url)
