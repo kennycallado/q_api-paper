@@ -13,7 +13,7 @@ pub async fn send_to_logic(fetch: &State<Fetch>, paper: &PaperPush) -> Result<Pa
     };
 
     let logic_url = ConfigGetter::get_entity_url("logic").unwrap_or("http://localhost:8041/api/v1/logic/".to_string())
-        + "checker";
+        + "checker/push";
 
     let client = fetch.client.lock().await;
     let res = client
