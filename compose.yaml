@@ -214,18 +214,18 @@ services:
   # }}}
 # }}}
 
-# # {{{ projects
-#   projects_api:
-#     image: kennycallado/q-api-projects:latest
-#     ports:
-#       - "8051:8000"
-#     expose:
-#       - "8051:8000"
-#     environment:
-#       - ROCKET_ADDRESS="0.0.0.0"
-#       - ROCKET_PORT=8000
-#       - ROCKET_SECRET_KEY=""
-#       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
-#     depends_on:
-#       - database
-# # }}}
+# {{{ projects
+  projects_api:
+    image: kennycallado/q-api-projects:latest
+    ports:
+      - "8051:8000"
+    expose:
+      - "8051:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
+    depends_on:
+      - database
+# }}}
