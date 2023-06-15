@@ -21,7 +21,7 @@ pub async fn patch_completed_admin(db: &Db, _admin: UserInClaims, id: i32) -> Re
     let paper = paper_repository::patch_completed(db, id).await;
 
     match paper {
-        Ok(paper) => {
+        Ok(_paper) => {
             // may be it was completed and it is not an error ??
             // if paper == 1 {
             //     Ok(Status::Ok)
