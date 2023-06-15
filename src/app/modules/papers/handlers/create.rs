@@ -2,6 +2,8 @@ use rocket::http::Status;
 use rocket::State;
 use rocket::serde::json::Json;
 
+use crate::app::providers::models::project::PubProject;
+use crate::app::providers::models::record::PubNewRecord;
 use crate::database::connection::Db;
 
 use crate::app::providers::services::fetch::Fetch;
@@ -43,11 +45,23 @@ pub async fn post_show_admin(fetch: &State<Fetch>, db: &Db, _admin: UserInClaims
         Err(status) => return Err(status),
     };
 
-    let user_record = logic_response.user_record.clone();
+    let new_record = PubNewRecord {
+        user_id: paper_push.user_id,
+        record: logic_response.user_record.clone(),
+    };
+
+    let project_record = match PubProject::store_record(fetch, paper_push.project_id, new_record).await {
+        Ok(record) => record,
+        Err(status) => return Err(status),
+    };
+
+    // Fatal enviar a users_api
+    let user_record = &project_record;
 
     // Update the paper in the database
     match paper_repository::update(&db, paper_push.id, logic_response.into()).await {
-        Ok(_) => Ok(rocket::serde::json::json!({ "user_record": user_record })),
+        Ok(_) => Ok(rocket::serde::json::json!({ "user_record": &project_record })),
         Err(_) => Err(Status::InternalServerError),
     }
 }
+
