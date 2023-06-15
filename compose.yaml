@@ -1,7 +1,7 @@
 version: "3.1"
 
 # Replace secret_key:
-# 11,$s/SECRET_KEY=""/SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+# 11,$s/SECRET_KEY=""/SECRET_KEY=""
 # 11,$s/SECRET_KEY="*.*"/SECRET_KEY=""
 #
 # Replace all the database credentials
@@ -31,7 +31,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -61,7 +61,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -90,7 +90,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -121,7 +121,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
       - ROCKET_USER_URL="http://users_api:8000/api/v1/user/"
     depends_on:
@@ -140,7 +140,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -169,7 +169,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -200,7 +200,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -231,7 +231,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -260,7 +260,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -304,7 +304,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
@@ -336,7 +336,7 @@ services:
     environment:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY="Lc3UDsJvs94w1Mov9ZH99sAO0U3fjKeS36ig1KhObeE="
+      - ROCKET_SECRET_KEY=""
       - ROCKET_DATABASES={questions={url="postgres://papers:papers@database/papers"}}
 
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile/"
