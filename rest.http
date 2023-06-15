@@ -37,7 +37,7 @@ GET http://localhost:8000/api/v1/paper/
 Accept: application/json
 Authorization: Bearer 
 
-GET http://localhost:8000/api/v1/paper/2
+GET http://localhost:8000/api/v1/paper/1
 Accept: application/json
 Authorization: Bearer 
 
@@ -60,7 +60,9 @@ Content-type: application/json
   "project_id": 1
 }
 
-POST http://localhost:8041/api/v1/logic/checker
+POST http://localhost:8000/api/v1/logic/checker/push/project/1
+
+POST http://localhost:8041/api/v1/logic/checker/push/
 Accept: application/json
 Authorization: Bearer 
 Content-type: application/json
@@ -112,5 +114,10 @@ Content-type: application/json
   "project_id": 1,
   "completed": true
 }
+
+PATCH http://localhost:8000/api/v1/paper/1/completed
+Accept: application/json
+Authorization: Bearer 
+Content-type: application/json
 
 # }}}
