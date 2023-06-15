@@ -22,6 +22,7 @@ pub struct NewPaper {
     pub user_id: i32,
     pub project_id: i32,
     pub resource_id: i32,
+    pub completed: Option<bool>,
 }
 
 impl From<Paper> for NewPaper {
@@ -30,6 +31,7 @@ impl From<Paper> for NewPaper {
             user_id: paper.user_id,
             project_id: paper.project_id,
             resource_id: paper.resource_id,
+            completed: Some(paper.completed),
         }
     }
 }
@@ -40,6 +42,7 @@ impl From<PaperPush> for NewPaper {
             user_id: value.user_id,
             project_id: value.project_id,
             resource_id: value.resource_id,
+            completed: Some(value.completed)
         }
     }
 }
