@@ -83,6 +83,7 @@ pub async fn get_last_admin(fetch: &State<Fetch>, db: Db,
 pub async fn post_create(db: Db, claims: AccessClaims, new_paper: Json<NewPaper>) -> Result<Json<Paper>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => create::post_create_admin(&db, claims.0.user, new_paper.into_inner()).await,
+        "robot" => create::post_create_admin(&db, claims.0.user, new_paper.into_inner()).await,
         _ => {
             println!("Error: post_create; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
@@ -118,6 +119,7 @@ pub async fn post_show_create_none(_id: i32, _paper: Json<PaperPush>) -> Status 
 pub async fn put_update(db: Db, claims: AccessClaims, id: i32, new_paper: Json<NewPaper>) -> Result<Json<Paper>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => update::put_update_admin(&db, claims.0.user, id, new_paper.into_inner()).await,
+        "robot" => update::put_update_admin(&db, claims.0.user, id, new_paper.into_inner()).await,
         _ => {
             println!("Error: put_update; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
