@@ -16,3 +16,20 @@ pub async fn put_update_admin(db: &Db, _admin: UserInClaims, id: i32, paper: New
         Err(_) => Err(Status::InternalServerError),
     }
 }
+
+pub async fn patch_completed_admin(db: &Db, _admin: UserInClaims, id: i32) -> Result<Status, Status> {
+    let paper = paper_repository::patch_completed(db, id).await;
+
+    match paper {
+        Ok(paper) => {
+            // may be it was completed and it is not an error ??
+            // if paper == 1 {
+            //     Ok(Status::Ok)
+            // } else {
+            //     Err(Status::NotFound)
+            // }
+            Ok(Status::Ok)
+        }
+        Err(_) => Err(Status::InternalServerError),
+    }
+}

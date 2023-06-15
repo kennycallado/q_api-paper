@@ -24,8 +24,11 @@ pub fn routes() -> Vec<rocket::Route> {
         post_create_none,
         post_show_create,
         post_show_create_none,
+
         put_update,
         put_update_none,
+        patch_completed,
+        patch_completed_none,
     ]
 }
 
@@ -129,5 +132,22 @@ pub async fn put_update(db: Db, claims: AccessClaims, id: i32, new_paper: Json<N
 
 #[put("/<_id>", data = "<_new_paper>", rank = 102)]
 pub async fn put_update_none(_id: i32, _new_paper: Json<NewPaper>) -> Status {
+    Status::Unauthorized
+}
+
+#[patch("/<id>/completed", rank = 1)]
+pub async fn patch_completed(db: Db, claims: AccessClaims, id: i32) -> Result<Status, Status> {
+    match claims.0.user.role.name.as_str() {
+        "admin" => update::patch_completed_admin(&db, claims.0.user, id).await,
+        "robot" => update::patch_completed_admin(&db, claims.0.user, id).await,
+        _ => {
+            println!("Error: patch_completed; Role not handled {}", claims.0.user.role.name);
+            Err(Status::BadRequest)
+        }
+    }
+}
+
+#[patch("/<_id>/completed", rank = 2)]
+pub async fn patch_completed_none(_id: i32) -> Status {
     Status::Unauthorized
 }

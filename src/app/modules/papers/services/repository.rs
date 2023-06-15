@@ -33,6 +33,17 @@ pub async fn update(db: &Db, id: i32, new_paper: NewPaper) -> Result<Paper, dies
     paper
 }
 
+pub async fn patch_completed(db: &Db, id: i32) -> Result<usize, diesel::result::Error> {
+    let paper = db.run(move |conn| {
+        diesel::update(
+            papers::table.find(id))
+            .set(papers::completed.eq(true))
+            .execute(conn)
+    }).await;
+
+    paper
+}
+
 pub async fn last_paper_for_all_users_where_project_id(db: &Db, project_id: i32) -> Result<Vec<Paper>, diesel::result::Error> {
     let papers = db.run(move |conn| {
         papers::table
