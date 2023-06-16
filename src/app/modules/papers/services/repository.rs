@@ -6,13 +6,26 @@ use crate::database::schema::papers;
 use crate::app::modules::papers::model::{Paper, NewPaper};
 
 pub async fn get_all(db: &Db) -> Result<Vec<Paper>, diesel::result::Error> {
-    let papers = db.run(|conn| papers::table.load::<Paper>(conn)).await;
+    let papers = db.run(move |conn| papers::table.load::<Paper>(conn)).await;
 
     papers
 }
 
 pub async fn get_by_id(db: &Db, id: i32) -> Result<Paper, diesel::result::Error> {
     let paper = db.run(move |conn| papers::table.find(id).first::<Paper>(conn)).await;
+
+    paper
+}
+
+pub async fn find_by_project_user_resource(db: &Db, project_id: i32, user_id: i32, resource_id: i32)
+    -> Result<Paper, diesel::result::Error> {
+    let paper = db.run(move |conn| {
+        papers::table
+            .filter(papers::project_id.eq(project_id))
+            .filter(papers::user_id.eq(user_id))
+            .filter(papers::resource_id.eq(resource_id))
+            .first::<Paper>(conn)
+    }).await;
 
     paper
 }

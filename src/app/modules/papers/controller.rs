@@ -25,6 +25,8 @@ pub fn routes() -> Vec<rocket::Route> {
         post_show_create,
         post_show_create_none,
 
+        put_index_update,
+        put_index_update_none,
         put_update,
         put_update_none,
         patch_completed,
@@ -115,6 +117,23 @@ pub async fn post_show_create(fetch: &State<Fetch>, db: Db, claims: AccessClaims
 
 #[post("/<_id>", data = "<_paper>", rank = 102)]
 pub async fn post_show_create_none(_id: i32, _paper: Json<PaperPush>) -> Status {
+    Status::Unauthorized
+}
+
+#[put("/", data = "<new_paper>", rank = 1)]
+pub async fn put_index_update(db: Db, claims: AccessClaims, new_paper: Json<NewPaper>) -> Result<Json<Paper>, Status> {
+    match claims.0.user.role.name.as_str() {
+        "admin" => update::put_update_find_admin(&db, claims.0.user, new_paper.into_inner()).await,
+        "robot" => update::put_update_find_admin(&db, claims.0.user, new_paper.into_inner()).await,
+        _ => {
+            println!("Error: put_update; Role not handled {}", claims.0.user.role.name);
+            Err(Status::BadRequest)
+        }
+    }
+}
+
+#[put("/", data = "<_new_paper>", rank = 2)]
+pub async fn put_index_update_none(_new_paper: Json<NewPaper>) -> Status {
     Status::Unauthorized
 }
 
