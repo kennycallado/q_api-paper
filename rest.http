@@ -45,7 +45,7 @@ GET http://localhost:8000/api/v1/paper/user/1
 Accept: application/json
 Authorization: Bearer 
 
-GET http://localhost:8000/api/v1/paper/last
+GET http://localhost:8000/api/v1/paper/1/last
 Accept: application/json
 Authorization: Bearer 
 
@@ -55,8 +55,8 @@ Authorization: Bearer
 Content-type: application/json
 
 {
-  "user_id": 2,
-  "resource_id": 1,
+  "user_id": 1,
+  "resource_id": 10,
   "project_id": 1
 }
 
@@ -69,7 +69,7 @@ Content-type: application/json
 
 {
   "id": 1,
-  "user_id": 2,
+  "user_id": 1,
   "user_record": { "step": 5, "mood": 45 },
   "project_id": 1,
   "resource_id": 50,
@@ -82,22 +82,24 @@ Content-type: application/json
   ]
 }
 
-POST http://localhost:8000/api/v1/paper/1
+POST http://localhost:8000/api/v1/paper/13
 Accept: application/json
 Authorization: Bearer 
 Content-type: application/json
 
 {
-  "id": 1,
+  "id": 13,
   "user_id": 1,
-  "user_record": { "step": 1, "mood": 45 },
+  "user_record": { "step": 6, "mood": 45 },
   "project_id": 1,
-  "resource_id": 10,
+  "resource_id": 65,
   "completed": false,
   "answers": [
     { "question_id": 1, "answer": "10" },
     { "question_id": 2, "answer": "10" },
     { "question_id": 3, "answer": "10" },
+    { "question_id": 4, "answer": "10" },
+    { "question_id": 6, "answer": "10" },
     { "question_id": 5, "answer": "5" }
   ]
 }
@@ -109,9 +111,9 @@ Content-type: application/json
 
 {
   "user_id": 1,
-  "resource_id": 50,
+  "resource_id": 10,
   "project_id": 1,
-  "completed": true
+  "completed": false
 }
 
 PUT http://localhost:8000/api/v1/paper/
@@ -121,7 +123,7 @@ Content-type: application/json
 
 {
   "user_id": 1,
-  "resource_id": 10,
+  "resource_id": 20,
   "project_id": 1,
   "completed": true
 }
@@ -130,5 +132,43 @@ PATCH http://localhost:8000/api/v1/paper/1/completed
 Accept: application/json
 Authorization: Bearer 
 Content-type: application/json
+
+# }}}
+
+# {{{
+
+# create resource til 20
+POST http://localhost:8031/api/v1/resource
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "resource_type": "slides",
+  "title": "Título dummy",
+  "description": "",
+  "content": {
+    "slides": [ 1, 2, 3 ]
+  }
+}
+
+PUT http://localhost:8031/api/v1/resource/10
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "resource_type": "slides",
+  "title": "Título 10",
+  "description": "Bla bla",
+  "content": {
+    "slides": [ 2,3 ]
+  }
+}
+
+GET http://localhost:8031/api/v1/resource/10
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
 
 # }}}

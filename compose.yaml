@@ -295,6 +295,8 @@ services:
   # {{{ logics
   logics_api:
     image: kennycallado/q-api-logics:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8041:8000"
     expose:
@@ -315,7 +317,7 @@ services:
       - ROCKET_ANSWER_URL="http://answers_api:8000/api/v1/answer/"
       - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide/"
       - ROCKET_RESOURCE_URL="http//resources_api:8000/api/v1/resource/"
-      - ROCKET_PAPER_URL="http://papers_api:8000/api/v1/paper/"
+      - ROCKET_PAPER_URL="http://host.docker.internal:8000/api/v1/paper/"
       - ROCKET_LOGIC_URL="http://logics_api:8000/api/v1/logic/"
       - ROCKET_CHECKER_URL="http://checker_api:3000/checker/"
       - ROCKET_PROJECT_URL="http://projects_api:8000/api/v1/project/"
