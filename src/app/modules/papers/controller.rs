@@ -76,12 +76,15 @@ pub async fn get_show_none(_id: i32) -> Status {
     Status::Unauthorized
 }
 
-#[get("/last", rank = 1)]
-pub async fn get_last_admin(fetch: &State<Fetch>, db: Db, 
-    // claims: AccessClaims
-) -> Result<Json<Vec<PaperPush>>, Status> {
-
-    show::get_index_user_paper(fetch, &db, /*claims.0.user,*/ 1).await
+#[get("/<id>/last", rank = 1)]
+pub async fn get_last_admin(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<Vec<PaperPush>>, Status> {
+    match claims.0.user.role.name.as_str() {
+        "admin" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
+            _ => {
+                println!("Error: get_index_user_paper; Role not handled {}", claims.0.user.role.name);
+                Err(Status::BadRequest)
+            }
+    }
 }
 
 #[post("/", data = "<new_paper>", rank = 1)]

@@ -63,7 +63,7 @@ pub async fn last_paper_for_all_users_where_project_id(db: &Db, project_id: i32)
             .select(papers::all_columns)
             .distinct_on(papers::user_id)
             .filter(papers::project_id.eq(project_id))
-            .filter(papers::completed.eq(true))
+            // .filter(papers::completed.eq(true))
             .order(papers::user_id.desc())
             .load::<Paper>(conn)
     }).await;

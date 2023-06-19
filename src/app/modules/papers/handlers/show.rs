@@ -53,9 +53,8 @@ pub async fn get_show_admin(fetch: &State<Fetch>, db: &Db, _admin: UserInClaims,
     Ok(Json(paper_complete))
 }
 
-pub async fn get_index_user_paper(fetch: &State<Fetch>, db: &Db,
-    // _admin: UserInClaims,
-    paper_id: i32) -> Result<Json<Vec<PaperPush>>, Status> {
+pub async fn get_index_user_paper(fetch: &State<Fetch>, db: &Db, _user: UserInClaims, paper_id: i32)
+-> Result<Json<Vec<PaperPush>>, Status> {
     let papers = match paper_repository::last_paper_for_all_users_where_project_id(&db, paper_id).await {
         Ok(paper) => paper,
         Err(_) => return Err(Status::NotFound),
