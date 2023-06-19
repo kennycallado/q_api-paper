@@ -64,6 +64,7 @@ pub async fn get_index_none() -> Status {
 pub async fn get_show(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<PaperComplete>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
+        "robot" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
         _ => {
             println!("Error: get_show; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
@@ -80,6 +81,7 @@ pub async fn get_show_none(_id: i32) -> Status {
 pub async fn get_last_admin(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<Vec<PaperPush>>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
+        "robot" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
             _ => {
                 println!("Error: get_index_user_paper; Role not handled {}", claims.0.user.role.name);
                 Err(Status::BadRequest)
