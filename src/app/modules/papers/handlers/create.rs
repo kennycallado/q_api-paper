@@ -40,16 +40,16 @@ pub async fn post_show_admin(fetch: &State<Fetch>, db: &Db, _admin: UserInClaims
     }
 
     // Send the paper to the logics_api
-    let logic_response = match helper::send_to_logic(fetch, &paper_push).await {
-        Ok(res) => res, 
+    match helper::send_to_logic(fetch, &paper_push).await {
+        Ok(res) => { Ok(rocket::serde::json::json!({ "user_record": res.user_record })) }, 
         Err(status) => return Err(status),
-    };
-
-    // update and response
-    let record = logic_response.user_record.clone();
-    match paper_repository::update(&db, paper_push.id, logic_response.into()).await {
-        Ok(_) => Ok(rocket::serde::json::json!({ "user_record": record })),
-        Err(_) => Err(Status::InternalServerError),
     }
+    // No longer needed
+    // // update and response
+    // let record = logic_response.user_record.clone();
+    // match paper_repository::update(&db, paper_push.id, logic_response.into()).await {
+    //     Ok(_) => Ok(rocket::serde::json::json!({ "user_record": record })),
+    //     Err(_) => Err(Status::InternalServerError),
+    // }
 }
 
