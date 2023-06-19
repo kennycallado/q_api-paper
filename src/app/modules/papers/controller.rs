@@ -18,7 +18,8 @@ pub fn routes() -> Vec<rocket::Route> {
         get_index_none,
         get_show,
         get_show_none,
-        get_last_admin,
+        get_lasts_admin,
+        get_lasts_admin_none,
 
         post_create,
         post_create_none,
@@ -77,8 +78,8 @@ pub async fn get_show_none(_id: i32) -> Status {
     Status::Unauthorized
 }
 
-#[get("/<id>/last", rank = 1)]
-pub async fn get_last_admin(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<Vec<PaperPush>>, Status> {
+#[get("/project/<id>/lasts", rank = 1)]
+pub async fn get_lasts_admin(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<Vec<PaperPush>>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
         "robot" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
@@ -87,6 +88,11 @@ pub async fn get_last_admin(fetch: &State<Fetch>, db: Db, claims: AccessClaims, 
                 Err(Status::BadRequest)
             }
     }
+}
+
+#[get("/project/<_id>/lasts", rank = 2)]
+pub async fn get_lasts_admin_none(_id: i32) -> Status {
+    Status::Unauthorized
 }
 
 #[post("/", data = "<new_paper>", rank = 1)]
