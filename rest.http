@@ -82,17 +82,17 @@ Content-type: application/json
   ]
 }
 
-POST http://localhost:8000/api/v1/paper/13
+POST http://localhost:8000/api/v1/paper/1
 Accept: application/json
 Authorization: Bearer 
 Content-type: application/json
 
 {
-  "id": 13,
+  "id": 1,
   "user_id": 1,
-  "user_record": { "step": 6, "mood": 45 },
+  "user_record": { "step": 3, "mood": 45 },
   "project_id": 1,
-  "resource_id": 65,
+  "resource_id": 30,
   "completed": false,
   "answers": [
     { "question_id": 1, "answer": "10" },

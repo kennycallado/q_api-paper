@@ -4,7 +4,7 @@
 [default]
 ident      = "questions_api-papers"
 port       = 8000
-# address    = "0.0.0.0"
+address    = "0.0.0.0"
 origin_url = "http://localhost:8000"
 # secret_key = ""
 
