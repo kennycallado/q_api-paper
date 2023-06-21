@@ -19,14 +19,20 @@ pub async fn get_show_admin(fetch: &State<Fetch>, db: &Db, _admin: UserInClaims,
 
     let paper = match paper {
         Ok(paper) => paper,
-        Err(_) => return Err(Status::NotFound),
+        Err(e) => {
+            println!("Error: get_show_admin (paper by id); {}", e);
+            return Err(Status::NotFound)
+        },
     };
 
     let resource = pr_repository::get_resource_by_id(fetch, paper.resource_id).await;
 
     let resource = match resource {
         Ok(resource) => resource,
-        Err(_) => return Err(Status::NotFound),
+        Err(e) => {
+            println!("Error: get_show_admin (resource by id);");
+            return Err(e)
+        },
     };
 
     let answers = match pa_repository::get_answer_ids_by_paper_id(&db, paper.id).await {
