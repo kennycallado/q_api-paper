@@ -39,7 +39,10 @@ pub async fn get_show_admin(fetch: &State<Fetch>, db: &Db, _admin: UserInClaims,
         Ok(answer_ids) => {
             let answers = match pa_repository::get_answer_by_ids(fetch, answer_ids).await {
                 Ok(answers) => answers,
-                Err(_) => return Err(Status::InternalServerError),
+                Err(e) => {
+                    println!("Error: get_show_admin (answers by ids);");
+                    return Err(e)
+                },
             };
 
             Some(answers)
