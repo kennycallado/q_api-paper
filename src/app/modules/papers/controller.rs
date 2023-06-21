@@ -66,6 +66,8 @@ pub async fn get_show(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i3
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
         "robot" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
+        "user" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
+        // TODO: manejo permisos
         _ => {
             println!("Error: get_show; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
