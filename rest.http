@@ -45,7 +45,7 @@ GET http://localhost:8000/api/v1/paper/user/1
 Accept: application/json
 Authorization: Bearer 
 
-GET http://localhost:8000/api/v1/paper/1/last
+GET http://localhost:8000/api/v1/paper/project/1/lasts
 Accept: application/json
 Authorization: Bearer 
 
