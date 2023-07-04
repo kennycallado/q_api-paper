@@ -17,6 +17,16 @@ pub async fn get_by_id(db: &Db, id: i32) -> Result<Paper, diesel::result::Error>
     paper
 }
 
+pub async fn get_all_by_user_id(db: &Db, user_id: i32) -> Result<Vec<Paper>, diesel::result::Error> {
+    let papers = db.run(move |conn| {
+        papers::table
+            .filter(papers::user_id.eq(user_id))
+            .load::<Paper>(conn)
+    }).await;
+
+    papers
+}
+
 pub async fn find_by_project_user_resource(db: &Db, project_id: i32, user_id: i32, resource_id: i32)
     -> Result<Paper, diesel::result::Error> {
     let paper = db.run(move |conn| {

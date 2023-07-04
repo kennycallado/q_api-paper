@@ -13,10 +13,15 @@ use crate::app::modules::papers::model::{Paper, NewPaper, PaperComplete, PaperPu
 pub fn routes() -> Vec<rocket::Route> {
     routes![
         options_all,
+
         get_index,
         get_index_none,
+        get_index_user,
+        get_index_user_none,
+
         get_show,
         get_show_none,
+
         get_lasts_admin,
         get_lasts_admin_none,
 
@@ -29,6 +34,7 @@ pub fn routes() -> Vec<rocket::Route> {
         put_index_update_none,
         put_update,
         put_update_none,
+
         patch_completed,
         patch_completed_none,
     ]
@@ -55,12 +61,30 @@ pub async fn get_index_none() -> Status {
     Status::Unauthorized
 }
 
+#[get("/user/<id>", rank = 101)]
+pub async fn get_index_user(db: Db, claims: AccessClaims, id: i32) -> Result<Json<Vec<Paper>>, Status> {
+    match claims.0.user.role.name.as_str() {
+        "admin" => index::get_index_user_admin(&db, claims.0.user, id).await,
+        "robot" => index::get_index_user_admin(&db, claims.0.user, id).await,
+        "user"  => index::get_index_user_admin(&db, claims.0.user, id).await,
+        _ => {
+            println!("Error: get_index_user; Role not handled {}", claims.0.user.role.name);
+            Err(Status::BadRequest)
+        }
+    }
+}
+
+#[get("/user/<_id>", rank = 102)]
+pub async fn get_index_user_none(_id: i32) -> Status {
+    Status::Unauthorized
+}
+
 #[get("/<id>", rank = 101)]
 pub async fn get_show(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<PaperComplete>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
         "robot" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
-        "user" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
+        "user"  => show::get_show_admin(fetch, &db, claims.0.user, id).await,
         // TODO: manejo permisos
         _ => {
             println!("Error: get_show; Role not handled {}", claims.0.user.role.name);
@@ -113,13 +137,12 @@ pub async fn post_show_create(fetch: &State<Fetch>, db: Db, claims: AccessClaims
     match claims.0.user.role.name.as_str() {
         "admin" => create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await,
         "robot" => create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await,
-        "user" => Ok(rocket::serde::json::json!({ "message": "Not implemented" })),
+        "user"  => Ok(rocket::serde::json::json!({ "message": "Not implemented" })),
         _ => {
             println!("Error: post_show_create; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
         }
     }
-    
 }
 
 #[post("/<_id>", data = "<_paper>", rank = 102)]
