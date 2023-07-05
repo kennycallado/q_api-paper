@@ -51,8 +51,8 @@ impl From<PaperPush> for NewPaper {
 #[serde(crate = "rocket::serde")]
 pub struct PaperComplete {
     pub id: i32,
-    pub project_id: i32,
     pub user_id: i32,
+    pub project_id: i32,
     pub completed: bool,
     pub resource: PubResource,
     pub answers: Option<Vec<PubAnswer>>,
