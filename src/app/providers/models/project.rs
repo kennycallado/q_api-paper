@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 use crate::app::providers::config_getter::ConfigGetter;
 use crate::app::providers::models::record::{PubRecord, PubNewRecord};
 
+use crate::app::providers::models::record::{PubNewRecord, PubRecord};
+
 #[cfg(feature = "fetch")]
 use crate::app::providers::services::fetch::Fetch;
 
@@ -92,4 +94,13 @@ impl PubProject {
             Err(_) => Err(Status::InternalServerError),
         }
     }
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct PubProjectWithRecords {
+    pub id: i32,
+    pub name: String,
+    pub keys: Vec<Option<String>>,
+    pub records: Option<Vec<PubRecord>>,
 }
