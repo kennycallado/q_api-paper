@@ -137,7 +137,7 @@ pub async fn post_show_create(fetch: &State<Fetch>, db: Db, claims: AccessClaims
     match claims.0.user.role.name.as_str() {
         "admin" => create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await,
         "robot" => create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await,
-        "user"  => Ok(rocket::serde::json::json!({ "message": "Not implemented" })),
+        "user"  => create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await,
         _ => {
             println!("Error: post_show_create; Role not handled {}", claims.0.user.role.name);
             Err(Status::BadRequest)
