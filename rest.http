@@ -55,8 +55,8 @@ Authorization: Bearer
 Content-type: application/json
 
 {
-  "user_id": 1,
-  "resource_id": 10,
+  "user_id": 2,
+  "resource_id": 2,
   "project_id": 1
 }
 
