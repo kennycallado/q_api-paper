@@ -1,36 +1,29 @@
 #![allow(unused)]
 
 #[cfg(feature = "cron")]
-use std::sync::Arc;
-
-#[cfg(feature = "cron")]
-use chrono::{DateTime, NaiveDateTime, Utc};
-
-#[cfg(feature = "cron")]
-use rocket::serde::{ uuid::Uuid, Serialize };
-#[cfg(feature = "cron")]
-use rocket::tokio::sync::Mutex;
-
-#[cfg(feature = "cron")]
-use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
-
-#[cfg(all(feature = "db", feature = "cron"))]
-use diesel::{PgConnection, ConnectionError};
-#[cfg(all(feature = "db", feature = "cron"))]
-use diesel::prelude::*;
-#[cfg(feature = "cron")]
-use crate::database::schema::cronjobs;
-
-#[cfg(feature = "cron")]
-use crate::app::providers::models::cronjob::{PubCronJob, PubNewCronJob};
-
+use super::claims::{Claims, UserInClaims};
 #[cfg(all(feature = "db", feature = "cron"))]
 use crate::app::providers::config_getter::ConfigGetter;
 #[cfg(all(feature = "db", feature = "cron"))]
 use crate::app::providers::models::cronjob::DbCron;
-
 #[cfg(feature = "cron")]
-use super::claims::{Claims, UserInClaims};
+use crate::app::providers::models::cronjob::{PubCronJob, PubNewCronJob};
+#[cfg(feature = "cron")]
+use crate::database::schema::cronjobs;
+#[cfg(feature = "cron")]
+use chrono::{DateTime, NaiveDateTime, Utc};
+#[cfg(all(feature = "db", feature = "cron"))]
+use diesel::prelude::*;
+#[cfg(all(feature = "db", feature = "cron"))]
+use diesel::{ConnectionError, PgConnection};
+#[cfg(feature = "cron")]
+use rocket::serde::{uuid::Uuid, Serialize};
+#[cfg(feature = "cron")]
+use rocket::tokio::sync::Mutex;
+#[cfg(feature = "cron")]
+use std::sync::Arc;
+#[cfg(feature = "cron")]
+use tokio_cron_scheduler::{Job, JobScheduler, JobSchedulerError};
 
 #[cfg(feature = "cron")]
 #[derive(Clone)]
@@ -60,10 +53,10 @@ impl CronManager {
         type Error = ConnectionError;
 
         match self.db_url {
-            Some(ref url) => {
-                PgConnection::establish(url)
-            },
-            None => Err(ConnectionError::BadConnection("No database url".to_string())),
+            Some(ref url) => PgConnection::establish(url),
+            None => Err(ConnectionError::BadConnection(
+                "No database url".to_string(),
+            )),
         }
     }
 
@@ -74,8 +67,8 @@ impl CronManager {
             Ok(db) => DbCron(db),
             Err(_) => {
                 println!("Error connecting to database");
-                return ;
-            },
+                return;
+            }
         };
 
         // get all jobs from db
@@ -83,53 +76,69 @@ impl CronManager {
         match jobs {
             Ok(jobs) => {
                 for new_cronjob in jobs {
-                     
-                    if new_cronjob.status == "finished" { continue ; }
+                    if new_cronjob.status == "finished" {
+                        continue;
+                    }
 
-                    match self.wrap_create_job(new_cronjob.id, &new_cronjob.into()).await {
+                    match self
+                        .wrap_create_job(new_cronjob.id, &new_cronjob.into())
+                        .await
+                    {
                         Ok(_) => (),
                         Err(e) => {
                             println!("Error creating job: {}", e);
-                            return ;
-                        },
+                            return;
+                        }
                     }
                 }
-            },
+            }
             Err(e) => {
                 println!("Error getting jobs from database: {}", e);
-                return ;
-            },
+                return;
+            }
         }
     }
 
     #[cfg(feature = "db")]
-    async fn wrap_create_job(&self, id: Uuid, new_cronjob: &PubNewCronJob) -> Result<Uuid, JobSchedulerError> {
+    async fn wrap_create_job(
+        &self,
+        id: Uuid,
+        new_cronjob: &PubNewCronJob,
+    ) -> Result<Uuid, JobSchedulerError> {
         match self.create_job(new_cronjob).await {
             Ok(uuid) => {
                 // remove old job
                 self.remove_job(id).await.unwrap();
 
                 Ok(uuid)
-            },
+            }
             Err(e) => {
                 println!("Error creating job: {}", e);
                 Err(e)
-            },
+            }
         }
     }
 
-    pub async fn create_job(&self, new_cronjob: &PubNewCronJob) -> Result<Uuid, JobSchedulerError> {
+    pub async fn create_job(
+        &self,
+        new_cronjob: &PubNewCronJob,
+    ) -> Result<Uuid, JobSchedulerError> {
         let service = ConfigGetter::get_entity_url(new_cronjob.service.as_str()).unwrap();
         let route = new_cronjob.route.clone();
         let manager = self.clone();
 
-        let job = Job::new_async(new_cronjob.schedule.as_str(), move |uuid, mut lock|  {
+        let job = Job::new_async(new_cronjob.schedule.as_str(), move |uuid, mut lock| {
             let url = format!("{}{}", service, route);
             let manager = manager.clone();
 
             Box::pin(async move {
                 let job = manager.get_job(uuid).await.unwrap();
-                let next_tick = lock.next_tick_for_job(uuid).await.unwrap().unwrap().naive_utc();
+                let next_tick = lock
+                    .next_tick_for_job(uuid)
+                    .await
+                    .unwrap()
+                    .unwrap()
+                    .naive_utc();
                 let until = job.until.clone();
 
                 manager.status_hanler(&mut lock, job, next_tick).await;
@@ -140,7 +149,7 @@ impl CronManager {
                         manager.update_status(uuid, "finished").await.unwrap();
                         // lock.remove(&uuid).await.unwrap();
 
-                        return ;
+                        return;
                     }
                 }
 
@@ -152,7 +161,8 @@ impl CronManager {
                         .get(url)
                         .bearer_auth(robo_token.unwrap())
                         .header("Accept", "application/json")
-                        .send().await;
+                        .send()
+                        .await;
                 }
 
                 if let Err(e) = res {
@@ -161,7 +171,7 @@ impl CronManager {
                     // change the state to error
                     manager.update_status(uuid, "error").await.unwrap();
                     // lock.remove(&uuid).await.unwrap();
-               }
+                }
             })
         });
 
@@ -172,11 +182,11 @@ impl CronManager {
                 self.add_job(job, new_cronjob).await.unwrap();
 
                 Ok(id)
-            },
+            }
             Err(e) => {
                 println!("Error: {};", e);
                 return Err(e);
-            },
+            }
         }
     }
 
@@ -192,7 +202,11 @@ impl CronManager {
         jobs.iter().find(|job| job.id == id).cloned()
     }
 
-    pub async fn add_job(&self, job: Job, cron_job: &PubNewCronJob) -> Result<(), JobSchedulerError> {
+    pub async fn add_job(
+        &self,
+        job: Job,
+        cron_job: &PubNewCronJob,
+    ) -> Result<(), JobSchedulerError> {
         let scheduler = self.scheduler.lock().await;
         let mut jobs = self.jobs.lock().await;
 
@@ -202,26 +216,25 @@ impl CronManager {
         let status;
         match cron_job.since {
             Some(since) => {
-                if now < since { status = "pending".to_owned(); }
-                else { status = "active".to_owned(); }
-            },
+                if now < since {
+                    status = "pending".to_owned();
+                } else {
+                    status = "active".to_owned();
+                }
+            }
             None => {
                 status = "active".to_owned();
             }
         }
 
         let since: Option<NaiveDateTime> = match cron_job.since {
-            Some(mut since) => {
-                Some(since.with_timezone(&Utc).naive_utc())
-            },
-            None => None
+            Some(mut since) => Some(since.with_timezone(&Utc).naive_utc()),
+            None => None,
         };
 
         let until: Option<NaiveDateTime> = match cron_job.until {
-            Some(mut until) => {
-                Some(until.with_timezone(&Utc).naive_utc())
-            },
-            None => None
+            Some(mut until) => Some(until.with_timezone(&Utc).naive_utc()),
+            None => None,
         };
 
         let job = PubCronJob {
@@ -239,7 +252,8 @@ impl CronManager {
             let mut db = self.db_connection().await.unwrap();
             diesel::insert_into(cronjobs::table)
                 .values(job.clone())
-                .execute(&mut db).expect("Error saving new cronjob");
+                .execute(&mut db)
+                .expect("Error saving new cronjob");
         }
 
         jobs.push(job);
@@ -252,9 +266,9 @@ impl CronManager {
         let mut db = self.db_connection().await.unwrap();
 
         diesel::delete(cronjobs::table.find(id))
-            .execute(&mut db).expect("Error there is no cronjob with this id in db");
+            .execute(&mut db)
+            .expect("Error there is no cronjob with this id in db");
     }
-
 
     pub async fn remove_job(&self, id: Uuid) -> Result<(), JobSchedulerError> {
         let scheduler = self.scheduler.lock().await;
@@ -271,7 +285,7 @@ impl CronManager {
                 self.remove_db(id).await;
 
                 Ok(())
-            },
+            }
             None => {
                 // This means that the job is not in memory,
                 // so we need to remove from the database
@@ -288,7 +302,8 @@ impl CronManager {
 
         diesel::update(cronjobs::table.find(id))
             .set(new_cronjob)
-            .execute(&mut db).expect("Error updating cronjob in db");
+            .execute(&mut db)
+            .expect("Error updating cronjob in db");
     }
 
     pub async fn update_status(&self, id: Uuid, status: &str) -> Result<(), JobSchedulerError> {
@@ -306,7 +321,11 @@ impl CronManager {
         Ok(())
     }
 
-    pub async fn update_since(&self, id: Uuid, since: Option<NaiveDateTime>) -> Result<(), JobSchedulerError> {
+    pub async fn update_since(
+        &self,
+        id: Uuid,
+        since: Option<NaiveDateTime>,
+    ) -> Result<(), JobSchedulerError> {
         let mut jobs = self.jobs.lock().await;
 
         let job = jobs.iter_mut().find(|job| job.id == id).unwrap();
@@ -321,8 +340,11 @@ impl CronManager {
         Ok(())
     }
 
-
-    pub async fn update_until(&self, id: Uuid, until: Option<NaiveDateTime>) -> Result<(), JobSchedulerError> {
+    pub async fn update_until(
+        &self,
+        id: Uuid,
+        until: Option<NaiveDateTime>,
+    ) -> Result<(), JobSchedulerError> {
         let mut jobs = self.jobs.lock().await;
 
         let job = jobs.iter_mut().find(|job| job.id == id).unwrap();
@@ -337,35 +359,40 @@ impl CronManager {
         Ok(())
     }
 
-    pub async fn status_hanler(&self, mut lock: &mut JobScheduler, job: PubCronJob, next_tick: NaiveDateTime) {
+    pub async fn status_hanler(
+        &self,
+        mut lock: &mut JobScheduler,
+        job: PubCronJob,
+        next_tick: NaiveDateTime,
+    ) {
         match job.status.as_str() {
             "finished" => {
                 println!("Job {} finished", job.id);
                 println!("Removing job from scheduler");
 
                 lock.remove(&job.id).await.unwrap();
-                return ;
-            },
+                return;
+            }
             "error" => {
                 println!("Job {} failed", job.id);
                 println!("Removing job from scheduler");
 
                 lock.remove(&job.id).await.unwrap();
-                return ;
-            },
+                return;
+            }
             "pending" => {
                 if let Some(since) = job.since {
                     if since < next_tick {
                         // change state to active
                         &self.update_status(job.id, "active").await.unwrap();
                     } else {
-                        return ;
+                        return;
                     }
                 } else {
                     // change state to active
                     &self.update_status(job.id, "active").await.unwrap();
                 }
-            },
+            }
             _ => {}
         }
     }

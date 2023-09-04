@@ -16,7 +16,17 @@ pub struct PubResourceContent {
 pub struct PubResource {
     pub id: i32,
     pub resource_type: String,
+    pub sort_order: Vec<Option<i32>>,
     pub title: String,
     pub description: String,
     pub content: Option<PubResourceContent>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct PubNewResource {
+    pub resource_type: String,
+    pub sort_order: Option<Vec<Option<i32>>>,
+    pub title: String,
+    pub description: String,
 }

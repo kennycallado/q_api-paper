@@ -1,8 +1,8 @@
-use chrono::{DateTime, Utc, NaiveDateTime};
-use rocket::serde::uuid::Uuid;
-use serde::{Deserialize, Serialize};
+use chrono::{DateTime, NaiveDateTime, Utc};
 #[cfg(all(feature = "db", feature = "cron"))]
 use diesel::PgConnection;
+use rocket::serde::uuid::Uuid;
+use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "cron")]
 use crate::database::schema::cronjobs;
@@ -46,7 +46,7 @@ pub struct PubNewCronJob {
     pub status: String,
     pub route: String,
     pub since: Option<DateTime<Utc>>,
-    pub until: Option<DateTime<Utc>>
+    pub until: Option<DateTime<Utc>>,
 }
 
 #[cfg(not(feature = "db"))]
@@ -58,7 +58,7 @@ pub struct PubNewCronJob {
     pub status: String,
     pub route: String,
     pub since: Option<DateTime<Utc>>,
-    pub until: Option<DateTime<Utc>>
+    pub until: Option<DateTime<Utc>>,
 }
 
 #[cfg(all(feature = "db", feature = "cron"))]
