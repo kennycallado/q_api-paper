@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::app::providers::models::resource::PubResource;
 use crate::app::providers::models::answer::{PubAnswer, PubNewAnswer};
+use crate::app::providers::models::resource::PubResource;
 
 use crate::database::schema::papers;
 
@@ -42,7 +42,7 @@ impl From<PaperPush> for NewPaper {
             user_id: value.user_id,
             project_id: value.project_id,
             resource_id: value.resource_id,
-            completed: Some(value.completed)
+            completed: Some(value.completed),
         }
     }
 }

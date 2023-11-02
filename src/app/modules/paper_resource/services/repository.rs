@@ -10,16 +10,16 @@ pub async fn get_resource_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubReso
         Ok(token) => token,
         Err(e) => {
             println!("Error: {}; get_resource_by_id(); getting robot_token", e);
-            return Err(Status::InternalServerError)
-        },
+            return Err(Status::InternalServerError);
+        }
     };
 
     let mut resource_url = match ConfigGetter::get_entity_url("resource") {
         Some(url) => url,
         None => {
             println!("Error: ; get_resource_by_id(); getting resource_url");
-            return Err(Status::InternalServerError)
-        },
+            return Err(Status::InternalServerError);
+        }
     };
 
     resource_url = resource_url + id.to_string().as_str();
@@ -42,8 +42,8 @@ pub async fn get_resource_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubReso
                     Ok(resource) => resource,
                     Err(e) => {
                         println!("Error: {}; get_resource_by_id(); parsing json", e);
-                        return Err(Status::InternalServerError)
-                    },
+                        return Err(Status::InternalServerError);
+                    }
                 };
 
                 Ok(resource)
@@ -54,6 +54,7 @@ pub async fn get_resource_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubReso
         }
         Err(e) => {
             println!("Error: {}; get_resource_by_id(); fetching resource", e);
-            Err(Status::InternalServerError)},
+            Err(Status::InternalServerError)
+        }
     }
 }

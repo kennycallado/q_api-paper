@@ -6,13 +6,17 @@ use crate::app::providers::services::fetch::Fetch;
 
 use crate::app::modules::papers::model::PaperPush;
 
-pub async fn send_to_logic(fetch: &State<Fetch>, paper: &PaperPush) -> Result<PaperPush, Status> {
+pub async fn send_to_logic(
+    fetch: &State<Fetch>,
+    paper: &PaperPush,
+) -> Result<PaperPush, Status> {
     let robot_token = match Fetch::robot_token().await {
         Ok(token) => token,
         Err(_) => return Err(Status::InternalServerError),
     };
 
-    let logic_url = ConfigGetter::get_entity_url("logic").unwrap_or("http://localhost:8041/api/v1/logic/".to_string())
+    let logic_url = ConfigGetter::get_entity_url("logic")
+        .unwrap_or("http://localhost:8041/api/v1/logic/".to_string())
         + "checker/push";
 
     let client = fetch.client.lock().await;
