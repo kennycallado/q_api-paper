@@ -37,7 +37,7 @@ pub async fn post_show_admin(
     paper_push: PaperPush,
 ) -> Result<rocket::serde::json::Value, Status> {
     // Save the answers
-    if paper_push.answers.is_some() {
+    if paper_push.answers.is_some() && paper_push.answers.clone().unwrap().len() > 0 {
         match pa_repository::send_answers(fetch, paper_push.answers.clone().unwrap()).await {
             Ok(answer_ids) => {
                 match pa_repository::add_answers(&db, paper_push.id, answer_ids).await {
