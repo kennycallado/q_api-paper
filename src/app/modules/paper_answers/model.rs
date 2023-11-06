@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-use crate::database::schema::paper_answers;
+#[cfg(feature = "db_sqlx")]
+use rocket_db_pools::sqlx::FromRow;
 
 use crate::app::modules::papers::model::Paper;
 
-#[derive(Debug, Clone, Deserialize, Serialize, Queryable, Identifiable, Associations)]
-#[diesel(belongs_to(Paper))]
-#[diesel(table_name = paper_answers)]
+#[cfg_attr(feature = "db_sqlx", derive(FromRow))]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct PaperAnswer {
     pub id: i32,
@@ -14,9 +14,7 @@ pub struct PaperAnswer {
     pub answer_id: i32,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize, Insertable)]
-#[diesel(belongs_to(Paper))]
-#[diesel(table_name = paper_answers)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct NewPaperAnswer {
     pub paper_id: i32,

@@ -40,9 +40,9 @@ pub fn options_all() -> Status {
 }
 
 #[get("/", rank = 1)]
-pub async fn get_index(db: Db, claims: AccessClaims) -> Result<Json<Vec<Paper>>, Status> {
+pub async fn get_index(db: &Db, claims: AccessClaims) -> Result<Json<Vec<Paper>>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => index::get_index_admin(&db, claims.0.user).await,
+        "admin" => index::get_index_admin(db, claims.0.user).await,
         _ => {
             println!(
                 "Error: get_index; Role not handled {}",
@@ -60,14 +60,14 @@ pub async fn get_index_none() -> Status {
 
 #[get("/user/<id>", rank = 101)]
 pub async fn get_index_user(
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     id: i32,
 ) -> Result<Json<Vec<Paper>>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => index::get_index_user_admin(&db, claims.0.user, id).await,
-        "robot" => index::get_index_user_admin(&db, claims.0.user, id).await,
-        "user" => index::get_index_user_admin(&db, claims.0.user, id).await,
+        "admin" |
+        "robot" |
+        "user" => index::get_index_user_admin(db, claims.0.user, id).await,
         _ => {
             println!(
                 "Error: get_index_user; Role not handled {}",
@@ -86,14 +86,14 @@ pub async fn get_index_user_none(_id: i32) -> Status {
 #[get("/<id>", rank = 101)]
 pub async fn get_show(
     fetch: &State<Fetch>,
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     id: i32,
 ) -> Result<Json<PaperComplete>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
-        "robot" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
-        "user" => show::get_show_admin(fetch, &db, claims.0.user, id).await,
+        "admin" |
+        "robot" |
+        "user" => show::get_show_admin(fetch, db, claims.0.user, id).await,
         // TODO: manejo permisos
         _ => {
             println!(
@@ -113,13 +113,13 @@ pub async fn get_show_none(_id: i32) -> Status {
 #[get("/project/<id>/lasts", rank = 1)]
 pub async fn get_lasts_admin(
     fetch: &State<Fetch>,
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     id: i32,
 ) -> Result<Json<Vec<PaperPush>>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
-        "robot" => show::get_index_user_paper(fetch, &db, claims.0.user, id).await,
+        "admin" |
+        "robot" => show::get_index_user_paper(fetch, db, claims.0.user, id).await,
         _ => {
             println!(
                 "Error: get_index_user_paper; Role not handled {}",
@@ -137,13 +137,13 @@ pub async fn get_lasts_admin_none(_id: i32) -> Status {
 
 #[post("/", data = "<new_paper>", rank = 1)]
 pub async fn post_create(
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     new_paper: Json<NewPaper>,
 ) -> Result<Json<Paper>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => create::post_create_admin(&db, claims.0.user, new_paper.into_inner()).await,
-        "robot" => create::post_create_admin(&db, claims.0.user, new_paper.into_inner()).await,
+        "admin" |
+        "robot" => create::post_create_admin(db, claims.0.user, new_paper.into_inner()).await,
         _ => {
             println!(
                 "Error: post_create; Role not handled {}",
@@ -162,20 +162,16 @@ pub async fn post_create_none(_new_paper: Json<NewPaper>) -> Status {
 #[post("/<id>", data = "<paper>", rank = 101)]
 pub async fn post_show_create(
     fetch: &State<Fetch>,
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     id: i32,
     paper: Json<PaperPush>,
 ) -> Result<rocket::serde::json::Value, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => {
-            create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await
-        }
-        "robot" => {
-            create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await
-        }
+        "admin" |
+        "robot" |
         "user" => {
-            create::post_show_admin(fetch, &db, claims.0.user, id, paper.into_inner()).await
+            create::post_show_admin(fetch, db, claims.0.user, id, paper.into_inner()).await
         }
         _ => {
             println!(
@@ -194,16 +190,14 @@ pub async fn post_show_create_none(_id: i32, _paper: Json<PaperPush>) -> Status 
 
 #[put("/", data = "<new_paper>", rank = 1)]
 pub async fn put_index_update(
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     new_paper: Json<NewPaper>,
 ) -> Result<Json<Paper>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => {
-            update::put_update_find_admin(&db, claims.0.user, new_paper.into_inner()).await
-        }
+        "admin" |
         "robot" => {
-            update::put_update_find_admin(&db, claims.0.user, new_paper.into_inner()).await
+            update::put_update_find_admin(db, claims.0.user, new_paper.into_inner()).await
         }
         _ => {
             println!(
@@ -222,17 +216,15 @@ pub async fn put_index_update_none(_new_paper: Json<NewPaper>) -> Status {
 
 #[put("/<id>", data = "<new_paper>", rank = 101)]
 pub async fn put_update(
-    db: Db,
+    db: &Db,
     claims: AccessClaims,
     id: i32,
     new_paper: Json<NewPaper>,
 ) -> Result<Json<Paper>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => {
-            update::put_update_admin(&db, claims.0.user, id, new_paper.into_inner()).await
-        }
+        "admin" |
         "robot" => {
-            update::put_update_admin(&db, claims.0.user, id, new_paper.into_inner()).await
+            update::put_update_admin(db, claims.0.user, id, new_paper.into_inner()).await
         }
         _ => {
             println!(
@@ -250,10 +242,10 @@ pub async fn put_update_none(_id: i32, _new_paper: Json<NewPaper>) -> Status {
 }
 
 #[patch("/<id>/completed", rank = 1)]
-pub async fn patch_completed(db: Db, claims: AccessClaims, id: i32) -> Result<Status, Status> {
+pub async fn patch_completed(db: &Db, claims: AccessClaims, id: i32) -> Result<Status, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => update::patch_completed_admin(&db, claims.0.user, id).await,
-        "robot" => update::patch_completed_admin(&db, claims.0.user, id).await,
+        "admin" |
+        "robot" => update::patch_completed_admin(db, claims.0.user, id).await,
         _ => {
             println!(
                 "Error: patch_completed; Role not handled {}",
