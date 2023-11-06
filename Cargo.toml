@@ -1,10 +1,10 @@
 [package]
 name      = "q-api-papers"
-version   = "0.1.6"
+version   = "0.1.7"
 edition   = "2021"
 
 [features]
-default   = ["db_diesel", "fetch"]
+default   = ["db_sqlx", "fetch"]
 
 cron      = ["tokio-cron-scheduler", "reqwest", "escalon-jobs"]
 db_diesel = ["diesel", "diesel_migrations", "rocket_sync_db_pools", "openssl"]
