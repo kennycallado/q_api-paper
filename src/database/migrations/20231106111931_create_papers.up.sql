@@ -12,6 +12,3 @@ INSERT INTO papers (user_id, resource_id, project_id) VALUES
   (1, 1, 1),
   (2, 1, 1)
   ;
-
-ALTER TABLE papers REPLICA IDENTITY FULL;
-CREATE PUBLICATION papers_pub FOR TABLE papers;

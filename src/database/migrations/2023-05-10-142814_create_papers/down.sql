@@ -1,2 +1,0 @@
-DROP TABLE papers CASCADE;
-DROP PUBLICATION papers_pub;
