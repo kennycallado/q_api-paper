@@ -22,7 +22,7 @@ impl Token {
 
         request
             .cookies()
-            .remove_private(Cookie::named("refresh_token"));
+            .remove_private(token.clone());
 
         let token = token.value().to_string();
         Some(Token(token))
