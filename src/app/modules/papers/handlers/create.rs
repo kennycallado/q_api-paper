@@ -42,17 +42,26 @@ pub async fn post_show_admin(
             Ok(answer_ids) => {
                 match pa_repository::add_answers(&db, paper_push.id, answer_ids).await {
                     Ok(_answers_inserted) => {}
-                    Err(_) => return Err(Status::InternalServerError),
+                    Err(e) => {
+                        eprintln!("Error 1: {}", e);
+                        return Err(Status::InternalServerError)
+                    },
                 }
             }
-            Err(_) => return Err(Status::InternalServerError),
+            Err(e) => {
+                eprintln!("Error 2: {}", e);
+                return Err(Status::InternalServerError)
+            },
         }
     }
 
     // Send the paper to the logics_api
     match helper::send_to_logic(fetch, &paper_push).await {
         Ok(res) => Ok(rocket::serde::json::json!({ "user_record": res.user_record })),
-        Err(status) => return Err(status),
+        Err(status) => {
+            eprintln!("Error 3: {}", status);
+            return Err(status)
+        },
     }
     // No longer needed
     // // update and response

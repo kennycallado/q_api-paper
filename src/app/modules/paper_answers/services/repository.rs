@@ -136,7 +136,7 @@ pub async fn add_answers(
 
     // " ON CONFLICT (paper_id, answer_id) DO NOTHING",
 
-    let mut query_builder = QueryBuilder::new("INSERT INTO paper_answers (paper_id, answer_id) VALUES ");
+    let mut query_builder = QueryBuilder::new("INSERT INTO paper_answers (paper_id, answer_id) ");
 
     let query = query_builder
         .push_values(new_answers, |mut separator, new_answer| {
@@ -144,8 +144,7 @@ pub async fn add_answers(
                 .push_bind(new_answer.paper_id)
                 .push_bind(new_answer.answer_id);
         })
-        .push(" ON CONFLICT (paper_id, answer_id) DO NOTHING")
-        .push(" RETURNING *")
+        // .push(" RETURNING *")
         .build();
     
     let answers_inserted = query
