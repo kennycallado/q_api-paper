@@ -1954,7 +1954,7 @@ dependencies = [
 
 [[package]]
 name = "q-api-papers"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "base64ct",
  "chrono",
